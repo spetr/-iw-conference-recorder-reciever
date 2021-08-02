@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"time"
 )
 
 func apiRecord(w http.ResponseWriter, r *http.Request) {
@@ -16,17 +17,19 @@ func apiRecord(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := r.Header.Get("X-ID")
-	f, err := os.Create(path.Join("data", id))
+	// TODO zkontrolovat "id"
+	f, err := os.OpenFile(path.Join("data", id), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	_, err = io.Copy(f, r.Body)
+	size, err := io.Copy(f, r.Body)
 	if err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	fmt.Printf("[%s] Recieved chank id: %s, size: %d\n", time.Now().String(), id, size)
 	w.WriteHeader(http.StatusOK)
 }
