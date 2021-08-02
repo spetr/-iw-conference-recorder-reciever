@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	fmt.Println("IW Recording API")
+
 	httpMux := http.NewServeMux()
 	httpMux.HandleFunc("/record", apiRecord)
 
