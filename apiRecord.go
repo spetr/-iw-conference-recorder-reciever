@@ -19,6 +19,7 @@ func apiRecord(w http.ResponseWriter, r *http.Request) {
 	id := r.Header.Get("X-ID")
 	// TODO zkontrolovat "id"
 	f, err := os.OpenFile(path.Join("data", id), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
+	defer f.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
